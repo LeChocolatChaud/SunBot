@@ -1,14 +1,12 @@
 #include <Wire.h>
 #include "QGPMaker_MotorShield.h"
-#include "PS2X_lib.h"
 #include "Chassis.h"
 #include "Arm.h"
-
-constexpr int DEAD_ZONE_RADIUS = 2;
+#include "Gamepad.h"
 
 // Create the motor shield driver with the default I2C address
 QGPMaker_MotorShield driver = QGPMaker_MotorShield();
-PS2X ps2x;
+Gamepad gamepad;
 
 // Motor definitions
 QGPMaker_DCMotor *frontleftMotor = driver.getMotor(3);
@@ -29,58 +27,20 @@ Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor);
 void setup() {
   Serial.begin(57600);
   driver.begin(50);  // create with the default frequency 50Hz
-  int error;
-  do {
-    error = ps2x.config_gamepad(13, 11, 10, 12, true, true);
-    if (error == 0) {
-      break;
-    } else {
-      delay(100);
-    }
-  } while (1);
+  gamepad.waitUntilConnected();
 }
 
-int isDead(uint8_t value) {
-  return value > 127 - DEAD_ZONE_RADIUS && value < 128 + DEAD_ZONE_RADIUS;
-}
 
-uint8_t smoothInput(uint8_t x) {
-  double dx = x;
-  double after = 0.0001 * pow(x - 127.5, 3) + 127.5;
-  if (after > 255) after = 255;
-  else if (after < 0) after = 0;
-  uint8_t result = floor(after);
-  return result;
-}
 
 void loop() {
-  ps2x.read_gamepad(false, 0);
+  gamepad.update();
 
-  uint8_t ly = ps2x.Analog(PSS_LY);
-  uint8_t lx = ps2x.Analog(PSS_LX);
-  uint8_t ry = ps2x.Analog(PSS_RY);
-  uint8_t rx = ps2x.Analog(PSS_RX);
-
-  Serial.print("[Main] Controller raw input: ly=");
-  Serial.print(ly);
-  Serial.print(" lx=");
-  Serial.print(lx);
-  Serial.print(" ry=");
-  Serial.print(ry);
-  Serial.print(" rx=");
-  Serial.println(rx);
-
-  if (isDead(ly) && isDead(lx) && isDead(ry) && isDead(rx)) {
+  if (!gamepad.hasStickInput()) {
     chassis.stop();
-    Serial.println("[Main] Controller stick in dead zone.");
   } else {
-    ly = 255 - ly;
-    lx = 255 - lx;
-    rx = 255 - rx;
-
-    ly = smoothInput(ly);
-    lx = smoothInput(lx);
-    rx = smoothInput(rx);
+    int8_t ly = gamepad.readStickAxis(LEFT_Y);
+    int8_t lx = gamepad.readStickAxis(LEFT_X);
+    int8_t rx = gamepad.readStickAxis(RIGHT_X);
 
     Serial.print("[Main] Controller processed input: ly=");
     Serial.print(ly);
