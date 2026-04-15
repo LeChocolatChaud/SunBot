@@ -23,6 +23,14 @@ QGPMaker_Servo *wristPitchServo = driver.getServo(4);
 QGPMaker_Servo *handServo = driver.getServo(5);
 
 Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor);
+ServoProxy shoulderRollProxy(shoulderRollServo, 0, 180);
+ServoProxy shoulderPitchProxy(shoulderPitchServo, 0, 180);
+ServoProxy elbowPitchProxy(elbowPitchServo, 0, 180);
+ServoProxy wristRollProxy(wristRollServo, 0, 180);
+ServoProxy wristPitchProxy(wristPitchServo, 0, 180);
+ServoProxy handProxy(handServo, 0, 180);
+
+Arm arm(shoulderRollProxy, shoulderPitchProxy, elbowPitchProxy, wristRollProxy, wristPitchProxy, handProxy);
 
 void setup() {
   Serial.begin(57600);
@@ -30,7 +38,15 @@ void setup() {
   gamepad.waitUntilConnected();
 }
 
+float x = 0;
+float y = 0;
+float z = 0;
+uint8_t pitch = 70;
+uint8_t roll = 0;
+uint8_t hand = 0;
 
+int8_t crossDirection = 1;
+int8_t circleDirection = 1;
 
 void loop() {
   gamepad.update();
@@ -50,6 +66,58 @@ void loop() {
     Serial.println(rx);
     chassis.drive(ly, lx, rx);
   }
+
+  boolean up = gamepad.readButton(DPAD_UP);
+  boolean down = gamepad.readButton(DPAD_DOWN);
+  boolean left = gamepad.readButton(DPAD_LEFT);
+  boolean right = gamepad.readButton(DPAD_RIGHT);
+  boolean cross = gamepad.readButton(CROSS);
+  boolean circle = gamepad.readButton(CIRCLE);
+  boolean leftBumper = gamepad.readButton(LEFT_BUMPER);
+  boolean leftTrigger = gamepad.readButton(LEFT_TRIGGER);
+  boolean rightBumper = gamepad.readButton(RIGHT_BUMPER);
+  boolean rightTrigger = gamepad.readButton(RIGHT_TRIGGER);
+
+  if (right) {
+    x += 0.1;
+  }
+  if (left) {
+    x -= 0.1;
+  }
+  if (up) {
+    y += 0.1;
+  }
+  if (down) {
+    y -= 0.1;
+  }
+
+  if (cross) {
+    z += crossDirection * 0.1;
+  } else if (gamepad.readButtonReleased(CROSS)) {
+    crossDirection = -crossDirection;
+  }
+
+  if (leftBumper) {
+    pitch -= 1;
+  }
+  if (rightBumper) {
+    pitch += 1;
+  }
+
+  if (leftTrigger) {
+    roll -= 1;
+  }
+  if (rightTrigger) {
+    roll += 1;
+  }
+
+  if (circle) {
+    hand += circleDirection * 5;
+  } else if (gamepad.readButtonReleased(CIRCLE)) {
+    circleDirection = -circleDirection;
+  }
+
+  arm.move(x, y, z, pitch, roll, hand);
 
   delay(50);
 }
