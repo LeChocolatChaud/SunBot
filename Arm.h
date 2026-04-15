@@ -54,19 +54,19 @@ class Arm {
     const float L1 = 10.4f;  // Shoulder to elbow (cm)
     const float L2 = 8.8f;   // Elbow to wrist (cm)
 
-    ServoProxy shoulderRollServo;
-    ServoProxy shoulderPitchServo;
-    ServoProxy elbowPitchServo;
-    ServoProxy wristRollServo;
-    ServoProxy wristPitchServo;
-    ServoProxy handServo;
+    ServoProxy* shoulderRollServo;
+    ServoProxy* shoulderPitchServo;
+    ServoProxy* elbowPitchServo;
+    ServoProxy* wristRollServo;
+    ServoProxy* wristPitchServo;
+    ServoProxy* handServo;
 
     void calculateJointAngles(float x, float y, float z, uint8_t pitch);
 
    public:
-    Arm(ServoProxy shoulderRollServo, ServoProxy shoulderPitchServo,
-        ServoProxy elbowPitchServo, ServoProxy wristRollServo,
-        ServoProxy wristPitchServo, ServoProxy handServo);
+    Arm(ServoProxy* shoulderRollServo, ServoProxy* shoulderPitchServo,
+        ServoProxy* elbowPitchServo, ServoProxy* wristRollServo,
+        ServoProxy* wristPitchServo, ServoProxy* handServo);
 
     /**
      * Move the arm to the desired location. The origin is at the center of the

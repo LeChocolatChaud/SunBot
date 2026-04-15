@@ -37,9 +37,9 @@ void Arm::calculateJointAngles(float x, float y, float z,
     angles[3] = static_cast<int>(round(thetaWrist));
 }
 
-Arm::Arm(ServoProxy shoulderRollServo, ServoProxy shoulderPitchServo,
-         ServoProxy elbowPitchServo, ServoProxy wristRollServo,
-         ServoProxy wristPitchServo, ServoProxy handServo)
+Arm::Arm(ServoProxy* shoulderRollServo, ServoProxy* shoulderPitchServo,
+         ServoProxy* elbowPitchServo, ServoProxy* wristRollServo,
+         ServoProxy* wristPitchServo, ServoProxy* handServo)
     : shoulderRollServo(shoulderRollServo),
       shoulderPitchServo(shoulderPitchServo), elbowPitchServo(elbowPitchServo),
       wristRollServo(wristRollServo), wristPitchServo(wristPitchServo),
@@ -62,10 +62,10 @@ void Arm::move(float x, float y, float z, uint8_t pitch, uint8_t roll,
     Serial.print(" hand=");
     Serial.print(hand);
 
-    shoulderRollServo.writeServo(angles[0]);
-    shoulderPitchServo.writeServo(angles[1]);
-    elbowPitchServo.writeServo(angles[2]);
-    wristRollServo.writeServo(roll);
-    wristPitchServo.writeServo(angles[3]);
-    handServo.writeServo(hand);
+    shoulderRollServo->writeServo(angles[0]);
+    shoulderPitchServo->writeServo(angles[1]);
+    elbowPitchServo->writeServo(angles[2]);
+    wristRollServo->writeServo(roll);
+    wristPitchServo->writeServo(angles[3]);
+    handServo->writeServo(hand);
 }

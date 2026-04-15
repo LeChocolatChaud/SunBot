@@ -31,7 +31,7 @@ ServoProxy wristRollProxy(wristRollServo, 0, 160);
 ServoProxy wristPitchProxy(wristPitchServo, 0, 160);
 ServoProxy handProxy(handServo, 0, 160);
 
-Arm arm(shoulderRollProxy, shoulderPitchProxy, elbowPitchProxy, wristRollProxy, wristPitchProxy, handProxy);
+Arm arm(&shoulderRollProxy, &shoulderPitchProxy, &elbowPitchProxy, &wristRollProxy, &wristPitchProxy, &handProxy);
 
 void setup() {
   Serial.begin(57600);
