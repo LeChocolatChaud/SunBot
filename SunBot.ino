@@ -18,17 +18,18 @@ QGPMaker_DCMotor *backrightMotor = driver.getMotor(1);
 QGPMaker_Servo *shoulderRollServo = driver.getServo(0);
 QGPMaker_Servo *shoulderPitchServo = driver.getServo(1);
 QGPMaker_Servo *elbowPitchServo = driver.getServo(2);
-QGPMaker_Servo *wristRollServo = driver.getServo(3);
-QGPMaker_Servo *wristPitchServo = driver.getServo(4);
+QGPMaker_Servo *wristRollServo = driver.getServo(4);
+QGPMaker_Servo *wristPitchServo = driver.getServo(3);
 QGPMaker_Servo *handServo = driver.getServo(5);
 
-Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor);
-ServoProxy shoulderRollProxy(shoulderRollServo, 0, 180);
-ServoProxy shoulderPitchProxy(shoulderPitchServo, 0, 180);
-ServoProxy elbowPitchProxy(elbowPitchServo, 0, 180);
-ServoProxy wristRollProxy(wristRollServo, 0, 180);
-ServoProxy wristPitchProxy(wristPitchServo, 0, 180);
-ServoProxy handProxy(handServo, 0, 180);
+Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor, 64);
+
+ServoProxy shoulderRollProxy(shoulderRollServo, 0, 160);
+ServoProxy shoulderPitchProxy(shoulderPitchServo, 0, 160);
+ServoProxy elbowPitchProxy(elbowPitchServo, 0, 160);
+ServoProxy wristRollProxy(wristRollServo, 0, 160);
+ServoProxy wristPitchProxy(wristPitchServo, 0, 160);
+ServoProxy handProxy(handServo, 0, 160);
 
 Arm arm(shoulderRollProxy, shoulderPitchProxy, elbowPitchProxy, wristRollProxy, wristPitchProxy, handProxy);
 
