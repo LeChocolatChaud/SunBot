@@ -79,8 +79,8 @@ class Arm {
      * @param roll The roll of wrist.
      * @param hand The hand servo angle.
      */
-    void moveArm(float x, float y, float z, uint8_t pitch, uint8_t roll,
-                 uint8_t hand);
+    void move(float x, float y, float z, uint8_t pitch, uint8_t roll,
+              uint8_t hand);
 };
 
 #endif  // ARM_H
