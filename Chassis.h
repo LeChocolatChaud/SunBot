@@ -3,6 +3,9 @@
 
 #include <QGPMaker_MotorShield.h>
 
+/**
+ * A Mecanum-driven chassis.
+ */
 class Chassis {
    private:
     QGPMaker_DCMotor *frontleft;
@@ -22,7 +25,19 @@ class Chassis {
     Chassis(QGPMaker_DCMotor *frontleft, QGPMaker_DCMotor *backleft,
             QGPMaker_DCMotor *frontright, QGPMaker_DCMotor *backright,
             int maxPower);
+
+    /**
+     * Drive the chassis according to stick values.
+     *
+     * @param axial The axial stick value.
+     * @param lateral The lateral stick value.
+     * @param yaw The yaw stick value.
+     */
     void drive(uint8_t axial, uint8_t lateral, uint8_t yaw);
+
+    /**
+     * Stop the chassis.
+     */
     void stop();
 };
 
