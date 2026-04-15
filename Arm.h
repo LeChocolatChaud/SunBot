@@ -75,7 +75,7 @@ class Arm {
      * @param x The lateral distance in cm from origin to wrist.
      * @param y The axial distance in cm from otigin to wrist.
      * @param z The vertical distance in cm from origin to wrist.
-     * @param pitch The pitch of wrist, using vertical down as 0.
+     * @param pitch The pitch of wrist, using vertical up as 0.
      * @param roll The roll of wrist.
      * @param hand The hand servo angle.
      */
