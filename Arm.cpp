@@ -14,19 +14,19 @@ void ServoProxy::setServoPulse(double pulse) { servo->writeServo(pulse); }
 
 void Arm::calculateJointAngles(float x, float y, float z,
                                uint8_t wristPitchAngle) {
-    float thetaBase = atan2(x, z) * (180.0f / PI);
-    float r = sqrt(x * x + z * z);
+    float thetaBase = atan2(y, x) * (180.0f / PI);
+    float r = sqrt(x * x + y * y);
 
-    float yEff = y;
+    float zEff = z;
 
     float cosElbow =
-        (r * r + yEff * yEff - L1 * L1 - L2 * L2) / (2.0f * L1 * L2);
+        (r * r + zEff * zEff - L1 * L1 - L2 * L2) / (2.0f * L1 * L2);
     cosElbow = constrain(cosElbow, -1.0f, 1.0f);
     float thetaElbow = acos(cosElbow) * (180.0f / PI);
 
-    float phi = atan2(yEff, r);
-    float cosPsi = (L1 * L1 + r * r + yEff * yEff - L2 * L2) /
-                   (2.0f * L1 * sqrt(r * r + yEff * yEff));
+    float phi = atan2(zEff, r);
+    float cosPsi = (L1 * L1 + r * r + zEff * zEff - L2 * L2) /
+                   (2.0f * L1 * sqrt(r * r + zEff * zEff));
     cosPsi = constrain(cosPsi, -1.0f, 1.0f);
     float psi = acos(cosPsi);
     float thetaShoulder = (phi + psi) * (180.0f / PI);
