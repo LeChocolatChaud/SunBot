@@ -39,11 +39,11 @@ void setup() {
   gamepad.waitUntilConnected();
 }
 
-float x = 0;
+float x = 10.0f;
 float y = 0;
-float z = 0;
-uint8_t pitch = 70;
-uint8_t roll = 0;
+float z = 10.0f;
+uint8_t pitch = 140;
+uint8_t roll = 160;
 uint8_t hand = 0;
 
 int8_t crossDirection = 1;
@@ -79,44 +79,59 @@ void loop() {
   boolean rightBumper = gamepad.readButton(RIGHT_BUMPER);
   boolean rightTrigger = gamepad.readButton(RIGHT_TRIGGER);
 
-  if (right) {
-    x += 0.1;
-  }
-  if (left) {
-    x -= 0.1;
-  }
   if (up) {
-    y += 0.1;
+    x += 0.5;
   }
   if (down) {
-    y -= 0.1;
+    x -= 0.5;
+  }
+  if (left) {
+    y += 0.5;
+  }
+  if (right) {
+    y -= 0.5;
+  }
+
+  float dist = sqrt(x * x + y * y);
+  if (dist > 19.2f) {
+    x = x / dist * 19.2f;
+    y = y / dist * 19.2f;
   }
 
   if (cross) {
-    z += crossDirection * 0.1;
+    z += crossDirection * 0.5;
   } else if (gamepad.readButtonReleased(CROSS)) {
     crossDirection = -crossDirection;
   }
 
   if (leftBumper) {
-    pitch -= 1;
+    if (pitch >= 5) pitch -= 5;
+    else pitch = 0;
   }
   if (rightBumper) {
-    pitch += 1;
+    if (pitch <= 155) pitch += 5;
+    else pitch = 160;
   }
 
-  if (leftTrigger) {
-    roll -= 1;
-  }
   if (rightTrigger) {
-    roll += 1;
+    if (roll >= 5) roll -= 5;
+    else roll = 0;
+  }
+  if (leftTrigger) {
+    if (roll <= 155) roll += 5;
+    else roll = 160;
   }
 
   if (circle) {
     hand += circleDirection * 5;
+    if (hand >= 250) hand = 0;
   } else if (gamepad.readButtonReleased(CIRCLE)) {
     circleDirection = -circleDirection;
   }
+
+  pitch = constrain(pitch, 0, 160);
+  roll = constrain(roll, 0, 160);
+  hand = constrain(hand, 0, 160);
 
   arm.move(x, y, z, pitch, roll, hand);
 
