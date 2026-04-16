@@ -1,8 +1,8 @@
 #include <Wire.h>
-#include "QGPMaker_MotorShield.h"
-#include "Chassis.h"
 #include "Arm.h"
+#include "Chassis.h"
 #include "Gamepad.h"
+#include "QGPMaker_MotorShield.h"
 
 // Create the motor shield driver with the default I2C address
 QGPMaker_MotorShield driver = QGPMaker_MotorShield();
@@ -22,16 +22,11 @@ QGPMaker_Servo *wristRollServo = driver.getServo(4);
 QGPMaker_Servo *wristPitchServo = driver.getServo(3);
 QGPMaker_Servo *handServo = driver.getServo(5);
 
-Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor, 64);
+Chassis chassis(frontleftMotor, backleftMotor, frontrightMotor, backrightMotor,
+                64);
 
-ServoProxy shoulderRollProxy(shoulderRollServo, 0, 160);
-ServoProxy shoulderPitchProxy(shoulderPitchServo, 0, 160);
-ServoProxy elbowPitchProxy(elbowPitchServo, 0, 160);
-ServoProxy wristRollProxy(wristRollServo, 0, 160);
-ServoProxy wristPitchProxy(wristPitchServo, 0, 160);
-ServoProxy handProxy(handServo, 0, 160);
-
-Arm arm(&shoulderRollProxy, &shoulderPitchProxy, &elbowPitchProxy, &wristRollProxy, &wristPitchProxy, &handProxy);
+Arm arm(shoulderRollServo, shoulderPitchServo, elbowPitchServo,
+        wristRollServo, wristPitchServo, handServo);
 
 void setup() {
   Serial.begin(57600);
@@ -105,28 +100,46 @@ void loop() {
   }
 
   if (leftBumper) {
-    if (pitch >= 5) pitch -= 5;
-    else pitch = 0;
+    if (pitch >= 5) {
+      pitch -= 5;
+    } else {
+      pitch = 0;
+    }
   }
   if (rightBumper) {
-    if (pitch <= 155) pitch += 5;
-    else pitch = 160;
+    if (pitch <= 155) {
+      pitch += 5;
+    } else {
+      pitch = 160;
+    }
   }
 
   if (rightTrigger) {
-    if (roll >= 5) roll -= 5;
-    else roll = 0;
+    if (roll >= 5) {
+      roll -= 5;
+    } else {
+      roll = 0;
+    }
   }
   if (leftTrigger) {
-    if (roll <= 155) roll += 5;
-    else roll = 160;
+    if (roll <= 155) {
+      roll += 5;
+    } else {
+      roll = 160;
+    }
   }
 
   if (circle) {
     hand += circleDirection * 5;
-    if (hand >= 250) hand = 0;
+    if (hand >= 250) {
+      hand = 0;
+    }
   } else if (gamepad.readButtonReleased(CIRCLE)) {
     circleDirection = -circleDirection;
+  }
+
+  if (gamepad.readButtonPressed(TRIANGLE)) {
+    arm.flipped = !arm.flipped;
   }
 
   pitch = constrain(pitch, 0, 160);

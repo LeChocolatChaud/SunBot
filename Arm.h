@@ -5,68 +5,30 @@
 #include "QGPMaker_MotorShield.h"
 
 /**
- * A proxy to control servo.
- */
-class ServoProxy {
- private:
-  QGPMaker_Servo *servo;
-
- public:
-  const uint8_t MIN_ANGLE;
-  const uint8_t MAX_ANGLE;
-
-  /**
-   * @param servo The servo that this ServoProxy will control.
-   * @param minAngle The minimum rotation angle, defaults to 0.
-   * @param maxAngle The maximum rotation angle, defaults to 180.
-   */
-  ServoProxy(QGPMaker_Servo *servo, uint8_t minAngle, uint8_t maxAngle);
-
-  /**
-   * Read servo angle as unsigned degrees.
-   *
-   * @return The servo angle.
-   */
-  uint8_t readDegrees();
-
-  /**
-   * Write an angle in degrees to the servo.
-   * The actual written value will be constrained to [MIN_ANGLE, MAX_ANGLE].
-   *
-   * @param angle The desired angle.
-   */
-  void writeServo(uint8_t angle);
-
-  /**
-   * Set the PWM pulse width of the servo.
-   *
-   * @param pulse The pulse width in seconds.
-   */
-  void setServoPulse(double pulse);
-};
-
-/**
  * A 6-DoF arm.
  */
 class Arm {
- private:
-  int angles[4]{0, 0, 0, 0};
-  const float L1 = 10.4f;  // Shoulder to elbow (cm)
-  const float L2 = 8.8f;   // Elbow to wrist (cm)
+  private:
+    int angles[4]{0, 0, 0, 0};
+    const float L1 = 10.4f;  // Shoulder to elbow (cm)
+    const float L2 = 8.8f;   // Elbow to wrist (cm)
 
-  ServoProxy *shoulderRollServo;
-  ServoProxy *shoulderPitchServo;
-  ServoProxy *elbowPitchServo;
-  ServoProxy *wristRollServo;
-  ServoProxy *wristPitchServo;
-  ServoProxy *handServo;
+    QGPMaker_Servo *shoulderRollServo;
+    QGPMaker_Servo *shoulderPitchServo;
+    QGPMaker_Servo *elbowPitchServo;
+    QGPMaker_Servo *wristRollServo;
+    QGPMaker_Servo *wristPitchServo;
+    QGPMaker_Servo *handServo;
 
-  void calculateJointAngles(float x, float y, float z, uint8_t pitch);
+    void calculateJointAngles(float x, float y, float z, uint8_t pitch);
 
- public:
-  Arm(ServoProxy *shoulderRollServo, ServoProxy *shoulderPitchServo,
-      ServoProxy *elbowPitchServo, ServoProxy *wristRollServo,
-      ServoProxy *wristPitchServo, ServoProxy *handServo);
+  public:
+    Arm(QGPMaker_Servo *shoulderRollServo, QGPMaker_Servo *shoulderPitchServo,
+        QGPMaker_Servo *elbowPitchServo, QGPMaker_Servo *wristRollServo,
+        QGPMaker_Servo *wristPitchServo, QGPMaker_Servo *handServo);
+
+  /** Whether the arm is flipped. */
+  boolean flipped = false;
 
   /**
    * Move the arm to the desired location. The origin is at the center of the

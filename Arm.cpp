@@ -1,17 +1,6 @@
 #include "Arm.h"
+#include "Arduino.h"
 #include "HardwareSerial.h"
-
-ServoProxy::ServoProxy(QGPMaker_Servo *servo, uint8_t minAngle = 0,
-                       uint8_t maxAngle = 160)
-    : servo(servo), MIN_ANGLE(minAngle), MAX_ANGLE(maxAngle) {}
-
-uint8_t ServoProxy::readDegrees() { return servo->readDegrees(); }
-
-void ServoProxy::writeServo(uint8_t angle) {
-  servo->writeServo(constrain(angle, MIN_ANGLE, MAX_ANGLE));
-}
-
-void ServoProxy::setServoPulse(double pulse) { servo->writeServo(pulse); }
 
 void Arm::calculateJointAngles(float x, float y, float z,
                                uint8_t wristPitchAngle) {
@@ -31,15 +20,21 @@ void Arm::calculateJointAngles(float x, float y, float z,
 
   float thetaWrist = wristPitchAngle + thetaShoulder - thetaElbow;
 
-  angles[0] = static_cast<int>(round(thetaBase)) + 73;
-  angles[1] = static_cast<int>(round(thetaShoulder));
-  angles[2] = static_cast<int>(round(thetaElbow)) + 70;
-  angles[3] = static_cast<int>(round(thetaWrist));
+  angles[0] = constrain(static_cast<int>(round(thetaBase)) + 73, 0, 160);
+  angles[1] = constrain(static_cast<int>(round(thetaShoulder)), 0, 160);
+  angles[2] = constrain(static_cast<int>(round(thetaElbow)) + 70, 0, 160);
+  angles[3] = constrain(static_cast<int>(round(thetaWrist)), 0, 160);
+
+  if (flipped) {
+    angles[1] = 160 - angles[1];
+    angles[2] = 160 - angles[2];
+    angles[3] = 160 - angles[3];
+  }
 }
 
-Arm::Arm(ServoProxy *shoulderRollServo, ServoProxy *shoulderPitchServo,
-         ServoProxy *elbowPitchServo, ServoProxy *wristRollServo,
-         ServoProxy *wristPitchServo, ServoProxy *handServo)
+Arm::Arm(QGPMaker_Servo *shoulderRollServo, QGPMaker_Servo *shoulderPitchServo,
+         QGPMaker_Servo *elbowPitchServo, QGPMaker_Servo *wristRollServo,
+         QGPMaker_Servo *wristPitchServo, QGPMaker_Servo *handServo)
     : shoulderRollServo(shoulderRollServo),
       shoulderPitchServo(shoulderPitchServo), elbowPitchServo(elbowPitchServo),
       wristRollServo(wristRollServo), wristPitchServo(wristPitchServo),
@@ -65,7 +60,7 @@ void Arm::move(float x, float y, float z, uint8_t pitch, uint8_t roll,
   shoulderRollServo->writeServo(angles[0]);
   shoulderPitchServo->writeServo(angles[1]);
   elbowPitchServo->writeServo(angles[2]);
-  wristRollServo->writeServo(roll);
+  wristRollServo->writeServo(constrain(roll, 0, 160));
   wristPitchServo->writeServo(angles[3]);
-  handServo->writeServo(hand);
+  handServo->writeServo(constrain(hand, 0, 160));
 }
