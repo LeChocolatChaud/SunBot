@@ -34,6 +34,7 @@ class Gamepad {
  private:
   PS2X ps2x;
   const uint8_t DEAD_ZONE_RADIUS;
+  boolean connected = false;
 
   boolean isDead(uint8_t value) {
     return value > 127 - DEAD_ZONE_RADIUS && value < 128 + DEAD_ZONE_RADIUS;
@@ -43,6 +44,9 @@ class Gamepad {
   Gamepad(uint8_t deadRadius = 2);
   byte waitUntilConnected(unsigned long interval = 100, byte maxTries = 0);
   boolean update();
+
+  boolean isConnected();
+  boolean reconnect();
 
   boolean readButton(Button button);
   boolean readButtonPressed(Button button);

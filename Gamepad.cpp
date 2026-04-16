@@ -18,7 +18,17 @@ byte Gamepad::waitUntilConnected(unsigned long interval, byte maxTries) {
   return error;
 }
 
-boolean Gamepad::update() { return ps2x.read_gamepad(false, 0); }
+boolean Gamepad::update() {
+  connected = ps2x.read_gamepad(false, 0);
+  return connected;
+}
+
+boolean Gamepad::isConnected() { return connected; }
+
+boolean Gamepad::reconnect() {
+  connected = ps2x.config_gamepad(13, 11, 10, 12, true, true) == 0;
+  return connected;
+}
 
 boolean Gamepad::readButton(Button button) { return ps2x.Button(button); }
 

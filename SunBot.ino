@@ -45,7 +45,14 @@ int8_t crossDirection = 1;
 int8_t circleDirection = 1;
 
 void loop() {
-  gamepad.update();
+  if (!gamepad.update()) {
+    if (gamepad.reconnect()) {
+      Serial.println("[Main] Gamepad reconnected");
+    } else {
+      chassis.stop();
+      return;
+    }
+  }
 
   if (!gamepad.hasStickInput()) {
     chassis.stop();
