@@ -94,11 +94,10 @@ void loop() {
     y -= 0.5;
   }
 
-  float dist = sqrt(x * x + y * y + z * z);
+  float dist = sqrt(x * x + y * y);
   if (dist > 19.2f) {
     x = x / dist * 19.2f;
     y = y / dist * 19.2f;
-    z = z / dist * 19.2f;
   }
 
   if (cross) {
