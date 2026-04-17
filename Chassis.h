@@ -13,8 +13,6 @@ class Chassis {
   QGPMaker_DCMotor *frontright;
   QGPMaker_DCMotor *backright;
 
-  const int MAX_POWER;
-
   static void setMotorPower(QGPMaker_DCMotor *motor, long power);
   static void stopMotor(QGPMaker_DCMotor *motor);
 
@@ -22,6 +20,8 @@ class Chassis {
   Chassis(QGPMaker_DCMotor *frontleft, QGPMaker_DCMotor *backleft,
           QGPMaker_DCMotor *frontright, QGPMaker_DCMotor *backright,
           int maxPower = 127);
+
+  int MAX_POWER;
 
   /**
    * Drive the chassis according to speed components.

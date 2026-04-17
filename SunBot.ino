@@ -94,10 +94,11 @@ void loop() {
     y -= 0.5;
   }
 
-  float dist = sqrt(x * x + y * y);
+  float dist = sqrt(x * x + y * y + z * z);
   if (dist > 19.2f) {
     x = x / dist * 19.2f;
     y = y / dist * 19.2f;
+    z = z / dist * 19.2f;
   }
 
   if (cross) {
@@ -147,6 +148,14 @@ void loop() {
 
   if (gamepad.readButtonPressed(TRIANGLE)) {
     arm.flipped = !arm.flipped;
+  }
+
+  if (gamepad.readButtonPressed(SQUARE)) {
+    if (chassis.MAX_POWER == 64) {
+      chassis.MAX_POWER = 127;
+    } else {
+      chassis.MAX_POWER = 64;
+    }
   }
 
   pitch = constrain(pitch, 0, 160);
